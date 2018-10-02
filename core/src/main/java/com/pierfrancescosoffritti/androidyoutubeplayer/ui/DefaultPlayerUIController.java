@@ -49,6 +49,7 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
     private TextView liveVideoIndicator;
 
     private ProgressBar progressBar;
+    private ImageView backButton;
     private ImageView menuButton;
     private ImageView playPauseButton;
     private ImageView youTubeButton;
@@ -61,6 +62,7 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
 
     @Nullable private View.OnClickListener onFullScreenButtonListener;
     @Nullable private View.OnClickListener onMenuButtonClickListener;
+    @Nullable private View.OnClickListener onBackButtonClickListener;
 
     // view state
     private boolean isPlaying = false;
@@ -92,6 +94,7 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
         videoDuration = controlsView.findViewById(R.id.video_duration);
         liveVideoIndicator = controlsView.findViewById(R.id.live_video_indicator);
 
+        backButton = controlsView.findViewById(R.id.back_button);
         progressBar = controlsView.findViewById(R.id.progress);
         menuButton = controlsView.findViewById(R.id.menu_button);
         playPauseButton = controlsView.findViewById(R.id.play_pause_button);
@@ -106,6 +109,7 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
         seekBar.setOnSeekBarChangeListener(this);
         panel.setOnClickListener(this);
         playPauseButton.setOnClickListener(this);
+        backButton.setOnClickListener(this);
         menuButton.setOnClickListener(this);
         fullScreenButton.setOnClickListener(this);
     }
@@ -190,6 +194,8 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
         menuButton.setVisibility(visibility);
     }
 
+
+
     @Override
     public void setMenuButtonClickListener(@NonNull View.OnClickListener customMenuButtonClickListener) {
         this.onMenuButtonClickListener = customMenuButtonClickListener;
@@ -256,6 +262,15 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
         this.onFullScreenButtonListener = customFullScreenButtonClickListener;
     }
 
+    @Override public void showBackButton(boolean show) {
+        int visibility = show ? View.VISIBLE : View.GONE;
+        backButton.setVisibility(visibility);
+    }
+
+    @Override public void setBackButtonClickListener(@NonNull View.OnClickListener customBackButtonClickListener) {
+        this.onBackButtonClickListener = customBackButtonClickListener;
+    }
+
     @Override
     public void onClick(View view) {
         if(view == panel)
@@ -266,6 +281,8 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
             onFullScreenButtonPressed();
         else if(view == menuButton)
             onMenuButtonPressed();
+        else if(view == backButton)
+            onBackButtonPressed();
     }
 
     private void onMenuButtonPressed() {
@@ -287,6 +304,11 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
             youTubePlayer.pause();
         else
             youTubePlayer.play();
+    }
+
+    private void onBackButtonPressed() {
+        if(onBackButtonClickListener != null)
+            onBackButtonClickListener.onClick(backButton);
     }
 
     private void updatePlayPauseButtonIcon(boolean playing) {
