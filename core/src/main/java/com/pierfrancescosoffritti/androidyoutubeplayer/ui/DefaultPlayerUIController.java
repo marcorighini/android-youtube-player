@@ -62,6 +62,8 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
     @Nullable private View.OnClickListener onFullScreenButtonListener;
     @Nullable private View.OnClickListener onMenuButtonClickListener;
 
+    @Nullable private SeekBar.OnSeekBarChangeListener onSeekBarChangeListener;
+
     // view state
     private boolean isPlaying = false;
     private boolean isVisible = true;
@@ -222,6 +224,10 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
     public void showYouTubeButton(boolean show) {
         int visibility = show ? View.VISIBLE : View.GONE;
         youTubeButton.setVisibility(visibility);
+    }
+
+    @Override public void setOnSeekBarChangeListener(@NonNull SeekBar.OnSeekBarChangeListener seekBarChangeListener) {
+        this.onSeekBarChangeListener = seekBarChangeListener;
     }
 
     @Override
@@ -480,11 +486,19 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
     @Override
     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
         videoCurrentTime.setText(Utils.formatTime(i));
+
+        if(onSeekBarChangeListener != null){
+            onSeekBarChangeListener.onProgressChanged(seekBar, i, b);
+        }
     }
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
         seekBarTouchStarted = true;
+
+        if(onSeekBarChangeListener != null){
+            onSeekBarChangeListener.onStartTrackingTouch(seekBar);
+        }
     }
 
     @Override
@@ -494,6 +508,10 @@ public class DefaultPlayerUIController implements PlayerUIController, YouTubePla
 
         youTubePlayer.seekTo(seekBar.getProgress());
         seekBarTouchStarted = false;
+
+        if(onSeekBarChangeListener != null){
+            onSeekBarChangeListener.onStopTrackingTouch(seekBar);
+        }
     }
 
     private void resetUI() {

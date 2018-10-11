@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import android.widget.SeekBar;
 import com.pierfrancescosoffritti.androidyoutubeplayer.ui.menu.YouTubePlayerMenu;
 
 
@@ -35,6 +36,8 @@ public interface PlayerUIController {
     void showBufferingProgress(boolean show);
 
     void showYouTubeButton(boolean show);
+
+    void setOnSeekBarChangeListener(@NonNull SeekBar.OnSeekBarChangeListener seekBarChangeListener);
 
     /**
      * Adds a View to the top of the player
